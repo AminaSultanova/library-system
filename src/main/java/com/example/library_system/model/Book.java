@@ -13,13 +13,18 @@ public class Book {
     private String author;
     private Integer publicationYear;
 
-    public Book() {}
+    // Constructor без параметров (обязательно для JPA)
+    public Book() {
+    }
 
-    public Book(String title, String author, Integer year) {
+    // Constructor с параметрами
+    public Book(String title, String author, Integer publicationYear) {
         this.title = title;
         this.author = author;
-        this.publicationYear = year;
+        this.publicationYear = publicationYear;
     }
+
+    // GETTERS & SETTERS
 
     public Long getId() {
         return id;
@@ -45,11 +50,11 @@ public class Book {
         this.author = author;
     }
 
-    public Integer getYear() {
+    public Integer getPublicationYear() {
         return publicationYear;
     }
 
-    public void setYear(Integer year) {
-        this.publicationYear = year;
+    public void setPublicationYear(Integer publicationYear) {
+        this.publicationYear = publicationYear;
     }
 }
