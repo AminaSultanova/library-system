@@ -7,19 +7,22 @@
 
 <h1>Library System</h1>
 
-<h2>Add Book</h2>
+<h2>Add / Update Book</h2>
 
 <input id="title" placeholder="Title">
 <input id="author" placeholder="Author">
 <input id="year" placeholder="Year">
 
 <button onclick="addBook()">Add Book</button>
+<button onclick="updateBook()">Update Book</button>
 
 <h2>Books</h2>
 
 <ul id="bookList"></ul>
 
 <script>
+
+    let currentBookId = null;
 
     function loadBooks() {
 
@@ -36,6 +39,7 @@
 
                     li.innerHTML =
                         book.title + " - " + book.author + " (" + book.publicationYear + ") " +
+                        "<button onclick='editBook(" + book.id + ", \"" + book.title + "\", \"" + book.author + "\", " + book.publicationYear + ")'>Edit</button> " +
                         "<button onclick='deleteBook(" + book.id + ")'>Delete</button>";
 
                     list.appendChild(li);
@@ -64,6 +68,46 @@
             })
         })
         .then(() => {
+            clearForm();
+            loadBooks();
+        });
+
+    }
+
+    function editBook(id, title, author, year) {
+
+        currentBookId = id;
+
+        document.getElementById("title").value = title;
+        document.getElementById("author").value = author;
+        document.getElementById("year").value = year;
+
+    }
+
+    function updateBook() {
+
+        if (currentBookId == null) {
+            alert("Select a book to edit first");
+            return;
+        }
+
+        const title = document.getElementById("title").value;
+        const author = document.getElementById("author").value;
+        const year = document.getElementById("year").value;
+
+        fetch("/api/books/" + currentBookId, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                title: title,
+                author: author,
+                publicationYear: year
+            })
+        })
+        .then(() => {
+            clearForm();
             loadBooks();
         });
 
@@ -74,9 +118,17 @@
         fetch("/api/books/" + id, {
             method: "DELETE"
         })
-        .then(() => {
-            loadBooks();
-        });
+        .then(() => loadBooks());
+
+    }
+
+    function clearForm() {
+
+        document.getElementById("title").value = "";
+        document.getElementById("author").value = "";
+        document.getElementById("year").value = "";
+
+        currentBookId = null;
 
     }
 
